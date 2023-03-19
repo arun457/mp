@@ -1,0 +1,109 @@
+<!doctype html> <html lang="en"> <meta http-equiv="content-type" content="text/html;charset=utf-8" /> <head>  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/bootstrap.min.css" rel="stylesheet" /><link href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/MyStyle.css" rel="stylesheet" /><link rel="stylesheet" href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/css/prism.css" type="text/css"><link rel="shortcut icon" href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/images/favicon.ico" type="image/x-icon"><title>Code</title> </head> <body> <div class="p-3"> <ul class="nav nav-tabs" id="myTab" role="tablist"> <li class="nav-item" role="presentation"> <a class="nav-link active" id="code-tab" data-toggle="tab" href="#code" role="tab" aria-controls="Outlines"aria-selected="true">Code</a> </li> <!--Here1-->     <!--Here2--> <li class="nav-item" role="presentation"> <a class="nav-link" id="video-tab" data-toggle="tab" href="#video" role="tab" aria-controls="video" aria-selected="false">Video</a> </li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" id="code" role="tabpanel" aria-labelledby="code-tab"> <pre><code class="language-armasm">.model small
+.stack 100h
+.data
+    msg db "Enter a string (length&lt100) ending with$"
+    str db 100 dup(0)   ;string to store input   
+    word_count db 0h    
+    letter_count db 0h  
+.code
+    main proc 
+            
+        mov ax, @data
+        mov ds, ax    
+            
+        newline macro ; function to print newline and carriage return
+        push ax       ;store temporarily the content of ax to stack
+        mov ah, 02h   ;character output mode
+        mov dl, 0ah   ;ASCII of newline
+        int 21h       ;display the new line
+        mov dl, 0dh   ;ASCII of carriage return
+        int 21h       ;display the carriage return
+        pop ax        ;restore the content of ax from stack
+        endm          ;end of macro
+        
+        
+        ;-------------Optional prompt to user  
+        ;displaying prompt message to user
+        lea dx, msg  ;offset of message to dx
+        mov ah, 09h  ;string output mode
+        int 21h      ;display the message
+        mov ah, 02h  ;character output mode to display $ seperately
+        mov dl, '$'  ;ASCII of $
+        int 21h      ;display $
+        
+        newline      ;display newline for input
+        ;-------------optional ends
+        
+            
+        ;taking input from the user
+        lea bx, str  		;offset of str to bx to store input
+        mov ah, 01h  		;character input mode
+   loop:int 21h      		;enter the character
+        cmp al, '$'  		;check if it is end of string
+        mov [bx], al 		;store the input to the string
+        je stop_input		;if the character is $ stop input
+        inc bx       		;increase bx for next loop
+        jmp loop            ;jump to next loop
+          
+stop_input: 
+        ;clearing the screen and setting to video mode
+        mov ah, 00h
+        mov al, 03h
+        int 10h                            
+        
+        ;----------counting the number of words          
+        lea bx, str         ;offset of str to bx
+     up:mov dl, [bx]        ;get the character
+        cmp dl, '$'         ;checking end of string
+        je end_of_string    ;if end of string jump to end of string
+        cmp dl, ' '         ;check if it is space
+        jne skip            ;if not space jump to skip
+        cmp letter_count, 5 ;compare if letter count&gt5
+        jc skip_word_count  ;if letter_count&lt5 skip word_count
+        inc word_count      ;increase the word count
+                
+skip_word_count:mov letter_count, 0     ;resetting the letter count
+                jmp next_loop           ;jump for next loop
+        
+   skip:inc letter_count                ;increase the letter count
+next_loop:inc bx                        ;increase bx for next loop
+         jmp up                         ;jmp for next character
+         ;---------counting of words ends                  
+         
+               
+        
+        
+end_of_string:cmp letter_count, 5     ;compare if letter count&gt5
+      jc display_count                ;if letter_count&lt5 skip word_count
+      inc word_count                  ;increase word count for the last word
+      
+      
+display_count:  ;------displaying count
+        
+        mov ax, 0000h;to store BCD Number
+        cmp word_count,0    ;comparing if word_count == 0
+        je skip_BCD_conversion    ;if yes no need to convert to BCD
+        clc
+decimal_bcd:inc ax     ;converting decimal count to BCD
+        daa            ;to convert to BCD
+        dec word_count
+        jnz decimal_bcd
+        
+skip_BCD_conversion:mov cx, ax      ;move the BCD count to cx
+        mov ah, 02h     ;setting to character output mode       
+        mov dl, cl      ;word_count is only in cl 
+        and dx, 00f0h   ;clearing lower nibble
+        rol dl, 04h     ;sending higher nibble to lower nibble
+        add dl, 48      ;converting to ASCII
+        int 21h         ;displaying the higher digit
+        mov dl, cl      ;retrieving the original word_count
+        and dx, 000fh   ;clearing higher nibble
+        add dl, 48      ;converting to ASCII
+        int 21h         ;displaying the lower digit
+        ;----------displaying count ends
+      
+      mov ah, 4ch   ;end of program
+      int 21h
+       
+   main endp
+end main</code></pre> </div> <!--Here1-->     <!--Here2--> <div class="tab-pane fade" id="video" role="tabpanel" aria-labelledby="video-tab"> <h1>Coming Soon</h1> </div> </div> </div> <script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/jquery-3.5.1.slim.min.js"></script><script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/bootstrap.min.js"></script><script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/popper.min.js"></script><script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/js/prism.js"></script> </body> </html>

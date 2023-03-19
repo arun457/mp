@@ -1,0 +1,24 @@
+<!doctype html> <html lang="en"> <meta http-equiv="content-type" content="text/html;charset=utf-8" /> <head>  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/bootstrap.min.css" rel="stylesheet" /><link href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/MyStyle.css" rel="stylesheet" /><link rel="stylesheet" href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/css/prism.css" type="text/css"><link rel="shortcut icon" href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/images/favicon.ico" type="image/x-icon"><title>Code</title> </head> <body> <div class="p-3"> <ul class="nav nav-tabs" id="myTab" role="tablist"> <li class="nav-item" role="presentation"> <a class="nav-link active" id="code-tab" data-toggle="tab" href="#code" role="tab" aria-controls="Outlines"aria-selected="true">Code</a> </li> <!--Here1-->     <!--Here2--> <li class="nav-item" role="presentation"> <a class="nav-link" id="video-tab" data-toggle="tab" href="#video" role="tab" aria-controls="video" aria-selected="false">Video</a> </li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" id="code" role="tabpanel" aria-labelledby="code-tab"> <pre><code class="language-armasm">LXI H C000h
+LXI D C500h
+MVI B 0Ah
+
+LOOP: MOV C M
+XRA A
+CALL BINTOBCD
+
+INX H
+DCR B
+JNZ LOOP
+
+HLT
+
+BINTOBCD: ADI 01h
+DAA
+JC SKIP
+DCR C
+JNZ BINTOBCD
+
+STAX D
+INX D
+
+SKIP: RET</code></pre> </div> <!--Here1-->     <!--Here2--> <div class="tab-pane fade" id="video" role="tabpanel" aria-labelledby="video-tab"> <h1>Coming Soon</h1> </div> </div> </div> <script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/jquery-3.5.1.slim.min.js"></script><script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/bootstrap.min.js"></script><script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/popper.min.js"></script><script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/js/prism.js"></script> </body> </html>

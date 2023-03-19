@@ -1,0 +1,111 @@
+<!doctype html> <html lang="en"> <meta http-equiv="content-type" content="text/html;charset=utf-8" /> <head>  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/bootstrap.min.css" rel="stylesheet" /><link href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/MyStyle.css" rel="stylesheet" /><link rel="stylesheet" href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/css/prism.css" type="text/css"><link rel="shortcut icon" href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/images/favicon.ico" type="image/x-icon"><title>Code</title> </head> <body> <div class="p-3"> <ul class="nav nav-tabs" id="myTab" role="tablist"> <li class="nav-item" role="presentation"> <a class="nav-link active" id="code-tab" data-toggle="tab" href="#code" role="tab" aria-controls="Outlines"aria-selected="true">Code</a> </li> <!--Here1-->     <!--Here2--> <li class="nav-item" role="presentation"> <a class="nav-link" id="video-tab" data-toggle="tab" href="#video" role="tab" aria-controls="video" aria-selected="false">Video</a> </li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" id="code" role="tabpanel" aria-labelledby="code-tab"> <pre><code class="language-armasm">.model small
+.stack 100h
+.data 
+    msg db "Enter a string (length&lt100) ending with$"
+    vowels db "aeiouAEIOU"
+    count db 00
+    count_string db 100 dup(0)
+    str db 100 dup(0)    
+    x db 15
+    y db 0
+.code
+    main proc 
+            
+        mov ax, @data
+        mov ds, ax
+        
+        newline macro ;newline and carriage return
+            push ax
+            mov ah, 02h
+            mov dl, 10
+            int 21h
+            mov dl, 0dh
+            int 21h
+            pop ax
+        endm    
+        
+        
+         
+        ;-------------Optional prompt to user  
+        ;displaying prompt message to user
+        lea dx, msg
+        mov ah, 09h
+        int 21h
+        mov ah, 02h
+        mov dl, '$'
+        int 21h
+        
+        newline
+        ;-------------optional ends  
+          
+          
+            
+        ;taking input from the user
+        lea bx, str
+        mov ah, 01h
+   loop:int 21h
+        cmp al, '$'
+        mov [bx], al
+        je stop_input
+        inc bx
+        jmp loop    
+          
+stop_input:  
+        ;clearing the screen and setting to video mode                                            
+        mov ah, 00h
+        mov al, 03h
+        int 10h
+        
+        ;counting the number of vowels and displaying the string      
+        lea bx, str
+        mov ah, 02h
+  check:mov dl, [bx]
+        cmp dl, '$'
+        je display_count
+        
+        lea si, vowels
+        mov cx, 10
+                
+vowel_check:cmp dl, [si]
+        jne skip
+        inc count
+        jmp break         
+   skip:inc si
+        loop vowel_check
+
+  break:int 21h
+        inc bx
+        jmp check
+        ;-------- finished counting vowels
+ 
+        
+display_count:  ;------displaying count
+        newline
+        
+        mov ax, 0000h
+decimal_bcd:inc ax
+        daa
+        dec count
+        jnz decimal_bcd
+        
+        mov cx, ax
+        
+        mov ah, 02h        
+        mov dl, cl
+        and dx, 00f0h
+        rol dl, 04h
+        add dl, 48
+        int 21h
+        mov dl, cl
+        and dx, 000fh
+        add dl, 48
+        int 21h
+        
+          
+                          
+      
+      mov ah, 4ch
+      int 21h
+       
+   main endp
+end main</code></pre> </div> <!--Here1-->     <!--Here2--> <div class="tab-pane fade" id="video" role="tabpanel" aria-labelledby="video-tab"> <h1>Coming Soon</h1> </div> </div> </div> <script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/jquery-3.5.1.slim.min.js"></script><script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/bootstrap.min.js"></script><script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/popper.min.js"></script><script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/js/prism.js"></script> </body> </html>

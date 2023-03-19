@@ -1,0 +1,95 @@
+<!doctype html> <html lang="en"> <meta http-equiv="content-type" content="text/html;charset=utf-8" /> <head>  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/bootstrap.min.css" rel="stylesheet" /><link href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/MyStyle.css" rel="stylesheet" /><link rel="stylesheet" href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/css/prism.css" type="text/css"><link rel="shortcut icon" href="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/images/favicon.ico" type="image/x-icon"><title>Code</title> </head> <body> <div class="p-3"> <ul class="nav nav-tabs" id="myTab" role="tablist"> <li class="nav-item" role="presentation"> <a class="nav-link active" id="code-tab" data-toggle="tab" href="#code" role="tab" aria-controls="Outlines"aria-selected="true">Code</a> </li> <!--Here1-->     <!--Here2--> <li class="nav-item" role="presentation"> <a class="nav-link" id="video-tab" data-toggle="tab" href="#video" role="tab" aria-controls="video" aria-selected="false">Video</a> </li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" id="code" role="tabpanel" aria-labelledby="code-tab"> <pre><code class="language-armasm">.model small
+.stack 100h
+.data 
+    msg db "Enter a string (length&lt100) ending with"
+    str db 100 dup(0)    
+    x db 15
+    y db 0
+.code
+    main proc 
+            
+        mov ax, @data
+        mov ds, ax    
+            
+        center_screen macro 
+        push ax 
+        ;moving the cursor to the center of screen 
+        mov ah, 02h
+        mov bh, 00h
+        mov dh, y
+        mov dl, x
+        int 10h
+        inc y    
+        pop ax
+        endm
+         
+         
+        ;-------------Optional prompt to user  
+        ;displaying prompt message to user
+        lea dx, msg
+        mov ah, 09h
+        int 21h
+        mov ah, 02h
+        mov dl, '$'
+        int 21h
+        
+        ;newline and carriage return
+        mov dl, 10
+        int 21h
+        mov dl, 0dh
+        int 21h   
+        ;-------------optional ends  
+          
+          
+            
+        ;taking input from the user
+        lea bx, str
+        mov ah, 01h
+   loop:int 21h
+        cmp al, '$'
+        mov [bx], al
+        je stop_input
+        inc bx
+        jmp loop    
+          
+stop_input:  
+        ;clearing the screen and setting to video mode                                            
+        mov ah, 00h
+        mov al, 03h
+        int 10h
+        
+        ;setting blue background and cyan foreground
+        mov ah, 06h
+        mov al, 00h     ;for entire screen
+        mov bh, 13h     ;blue background and cyan foreground
+        mov cx, 00h
+        mov dh, 24
+        mov dl, 79
+        int 10h
+        ;finished setting the background and foreground color
+         
+        center_screen
+        
+        ;converting to upper case          
+        lea bx, str
+        mov ah, 02h
+convert:mov dl, [bx]
+        cmp dl, '$'
+        je stop
+        cmp dl, ' '
+        jne skip
+        center_screen
+        jmp next_loop
+        
+   skip:cmp dl, 'a'
+        jb skip_convert
+        sub dl, 32
+skip_convert: int 21h
+   next_loop:inc bx
+             jmp convert                  
+      
+ stop:mov ah, 4ch
+      int 21h
+       
+   main endp
+end main</code></pre> </div> <!--Here1-->     <!--Here2--> <div class="tab-pane fade" id="video" role="tabpanel" aria-labelledby="video-tab"> <h1>Coming Soon</h1> </div> </div> </div> <script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/jquery-3.5.1.slim.min.js"></script><script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/bootstrap.min.js"></script><script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/Bootstrap/popper.min.js"></script><script src="https://sthaarun.com.np/Dependencies-Server/Microprocessor-Website/js/prism.js"></script> </body> </html>
